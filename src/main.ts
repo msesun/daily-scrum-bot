@@ -1,15 +1,15 @@
 import { google } from 'googleapis';
-import fs from 'fs'
 import { WebClient } from '@slack/web-api';
 import dayjs from 'dayjs';
 
 const getLuckyWinner = async (today: string) => {
 
-  const fileName = process.env.GOOGLE_CREDENTIALS;
-  const credentials = JSON.parse(fs.readFileSync(`src/${fileName}`, 'utf-8'));
+  const serviceAccountEmail = process.env.SERVICE_ACCOUNT_EMAIL;
+  const serviceAccountKey: string = process.env.SERVICE_ACCOUNT_KEY || '';
+  const key = Buffer.from(serviceAccountKey, 'base64').toString('binary');
   const auth = new google.auth.JWT({
-    email: credentials.client_email,
-    key: credentials.private_key,
+    email: serviceAccountEmail,
+    key,
     scopes: [
       'https://www.googleapis.com/auth/drive',
       'https://www.googleapis.com/auth/spreadsheets.readonly'
@@ -23,7 +23,6 @@ const getLuckyWinner = async (today: string) => {
     });
 
   const rows = spreadsheetData.data.values || [];
-  console.log(rows);
 
   for (const row of rows) {
 
@@ -48,8 +47,9 @@ const main = async () => {
   const today = dayjs().format('MMM D, YYYY');
   const luckyWinner = await getLuckyWinner(today);
 
-  console.log(today, luckyWinner);
+  // console.log(today, luckyWinner);
   sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#test-zapier', 'Daily Scrum Bot', ':alarm_clock:');
+  // sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
 }
 
 main();
