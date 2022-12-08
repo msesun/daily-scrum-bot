@@ -49,7 +49,7 @@ const main = async () => {
 
   // console.log(today, luckyWinner);
   sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#test-zapier', 'Daily Scrum Bot', ':alarm_clock:');
-  // sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
+  sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
 }
 
 main();
