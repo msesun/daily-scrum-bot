@@ -5,11 +5,12 @@ import dayjs from 'dayjs';
 
 const getLuckyWinner = async (today: string) => {
 
-  const fileName = process.env.GOOGLE_CREDENTIALS;
-  const credentials = JSON.parse(fs.readFileSync(`src/${fileName}`, 'utf-8'));
+  const serviceAccountEmail = process.env.SERVICE_ACCOUNT_EMAIL;
+  const serviceAccountKey: string = process.env.SERVICE_ACCOUNT_KEY || '';
+  const key = Buffer.from(serviceAccountKey, 'base64').toString('binary');
   const auth = new google.auth.JWT({
-    email: credentials.client_email,
-    key: credentials.private_key,
+    email: serviceAccountEmail,
+    key,
     scopes: [
       'https://www.googleapis.com/auth/drive',
       'https://www.googleapis.com/auth/spreadsheets.readonly'
@@ -23,7 +24,6 @@ const getLuckyWinner = async (today: string) => {
     });
 
   const rows = spreadsheetData.data.values || [];
-  console.log(rows);
 
   for (const row of rows) {
 
