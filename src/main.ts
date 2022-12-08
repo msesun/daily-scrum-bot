@@ -1,5 +1,4 @@
 import { google } from 'googleapis';
-import fs from 'fs'
 import { WebClient } from '@slack/web-api';
 import dayjs from 'dayjs';
 
@@ -48,8 +47,9 @@ const main = async () => {
   const today = dayjs().format('MMM D, YYYY');
   const luckyWinner = await getLuckyWinner(today);
 
-  console.log(today, luckyWinner);
+  // console.log(today, luckyWinner);
   sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#test-zapier', 'Daily Scrum Bot', ':alarm_clock:');
+  sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
 }
 
 main();
