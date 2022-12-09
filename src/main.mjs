@@ -55,3 +55,10 @@ export const main = async (googleJsonSecret) => {
   sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#test-zapier', 'Daily Scrum Bot', ':alarm_clock:');
   sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
 }
+
+(async () => {
+  console.log(process);
+  if (process.env.OFFLINE) {
+    await main();
+  }
+})().then(() => console.log('finished!'));
