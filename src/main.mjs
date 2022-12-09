@@ -9,15 +9,14 @@ const getLuckyWinner = async (today, jsonSecret) => {
 
   console.log(`usingAccountEmail: ${serviceAccountEmail}`);
 
-  const auth = new google.auth.JWT(
-    serviceAccountEmail,
-    null,
-    serviceAccountKey,
-    [
+  const auth = new google.auth.JWT({
+    email: serviceAccountEmail,
+    key: serviceAccountKey,
+    scopes: [
       'https://www.googleapis.com/auth/drive',
       'https://www.googleapis.com/auth/spreadsheets.readonly'
     ]
-  );
+  });
 
   const sheet = google.sheets('v4')
 
@@ -29,9 +28,11 @@ const getLuckyWinner = async (today, jsonSecret) => {
     range: 'Daily Scrum!A1:B',
   });
 
-  const rows = spreadsheetData.data.values || [];
-  const row = rows.find((row) => row.includes(today));
-  return row ? row[1] : null;
+  for (const row of rows) {
+    if (row.includes(today)) {
+      return row[1];
+    }
+  }
 };
 
 const sendSlackChannelMessage = async (message, channelId, botName, icon) => {
