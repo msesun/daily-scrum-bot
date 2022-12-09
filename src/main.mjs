@@ -28,6 +28,7 @@ const getLuckyWinner = async (today, jsonSecret) => {
     range: 'Daily Scrum!A1:B',
   });
 
+  const rows = spreadsheetData.data.values || [];
   for (const row of rows) {
     if (row.includes(today)) {
       return row[1];
