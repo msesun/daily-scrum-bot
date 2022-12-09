@@ -58,6 +58,15 @@ export const main = async (googleJsonSecret) => {
 
 (async () => {
   if (process.env.IS_CLI) {
-    await main();
+    const serviceAccountEmail = process.env.SERVICE_ACCOUNT_EMAIL;
+    const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY || '';
+    const key = Buffer.from(serviceAccountKey, 'base64').toString('binary');
+
+    const googleJsonSecret = {
+      client_email: serviceAccountEmail,
+      private_key: key
+    }
+
+    await main(googleJsonSecret);
   }
 })().then(() => console.log('finished!'));
