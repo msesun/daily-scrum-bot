@@ -57,7 +57,6 @@ export const main = async (googleJsonSecret) => {
 }
 
 (async () => {
-  console.log(process);
   if (process.env.OFFLINE) {
     await main();
   }
