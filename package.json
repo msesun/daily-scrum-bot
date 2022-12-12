@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "start": "IS_CLI=true node src/main.mjs"
   },
   "dependencies": {
     "@netlify/functions": "^1.3.0",

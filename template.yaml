@@ -1,0 +1,60 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+
+# The AWSTemplateFormatVersion identifies the capabilities of the template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  flexion-lucky-winner
+
+# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform:
+- AWS::Serverless-2016-10-31
+
+Parameters:
+  SlackApiToken:
+    Type: String
+    Default: ''
+  SpreadsheetId:
+    Type: String
+    Default: ''
+
+Resources:
+  ScrumBot:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Lambda that processes at 9am central weekdays to send who is the lucky winner
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Handler: src/lambda/scrum-bot-handler.handler
+      Environment:
+        Variables:
+          SLACK_API_TOKEN:
+            Ref: SlackApiToken
+          SPREADSHEET_ID:
+            Ref: SpreadsheetId
+          GOOGLE_CREDENTIALS: ''
+          SERVICE_ACCOUNT_EMAIL: ''
+          SERVICE_ACCOUNT_KEY: ''
+      Policies:
+        - Statement:
+          - Sid: ScrumBotSecrets
+            Effect: 'Allow'
+            Action:
+              - 'secretsmanager:GetSecretValue'
+            Resource:
+              "Fn::Join":
+                - ':'
+                - - 'arn:aws:secretsmanager'
+                  - Ref: "AWS::Region"
+                  - Ref: "AWS::AccountId"
+                  - 'secret:scrum-bot/*'
+      Events:
+        CloudWatchEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 * ? * MON-FRI *)
+      MemorySize: 512
+      Timeout: 100
