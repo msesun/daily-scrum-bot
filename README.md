@@ -2,6 +2,7 @@
 
 ### A simple application to randomize daily scrum presenter.
 ### Currently pulls data from a Google Sheets
+### Hosted at [Netlify](daily-scrum-bot.netlify.app) 
 ---
 Uses typescript 
 Uses Google API to grab Google Sheets data 
