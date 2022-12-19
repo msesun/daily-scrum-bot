@@ -2,7 +2,7 @@ import { google } from 'googleapis';
 import { WebClient } from '@slack/web-api';
 import dayjs from 'dayjs';
 
-const getLuckyWinner = async (today: string) => {
+const getLuckyWinner = async (today: string, spreadsheetId: string) => {
 
   const serviceAccountEmail = process.env.SERVICE_ACCOUNT_EMAIL;
   const serviceAccountKey: string = process.env.SERVICE_ACCOUNT_KEY || '';
@@ -17,7 +17,7 @@ const getLuckyWinner = async (today: string) => {
   })
   const sheet = google.sheets('v4')
   const spreadsheetData = await sheet.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId,
       auth: auth,
       range: 'Daily Scrum!A1:B',
     });
@@ -43,13 +43,15 @@ const sendSlackChannelMessage = async (message: string, channelId: string, botNa
   });
 }
 
-const main = async () => {
+const main = async (channel: string, spreadsheetId: string) => {
   const today = dayjs().format('MMM D, YYYY');
-  const luckyWinner = await getLuckyWinner(today);
+  const luckyWinner = await getLuckyWinner(today, spreadsheetId);
+  const message = `<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`;
 
-  // console.log(today, luckyWinner);
-  sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#test-zapier', 'Daily Scrum Bot', ':alarm_clock:');
-  sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
+  sendSlackChannelMessage(message, channel, 'Daily Scrum Bot', ':alarm_clock:');
+  // sendSlackChannelMessage(`<!here> _${today}_ - *${luckyWinner}*, you are today\'s lucky winner!`, '#drc-f1-app-team', 'Daily Scrum Bot', ':alarm_clock:');
+
+  return { message, channel, winner: luckyWinner };
 }
 
-main();
+export { main };
