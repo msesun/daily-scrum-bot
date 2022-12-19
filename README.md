@@ -20,6 +20,21 @@ You will also need a credentials.json file that includes the private key for thi
 
 Run locally
 ---
-To run script:  
+To start local server:    
 `npm start`
+
+Then navigate to `http://localhost:3000/api`
+
+The API takes in _two_ query params:
+
+| Param  | Description  | Example  |
+|---|---|---|
+| team | team name, currently supports 'f1' or 'f4' | f1 |
+| channel | slack channel without the '#' | test-zapier |
+
+**Example Request:**
+
+`GET /api`    
+http://localhost:3000/api?team=f4&channel=test-zapier
+
 
